@@ -1,0 +1,116 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load and prepare data
+def load_data():
+    # Simulated data for demonstration
+    data = pd.DataFrame({
+        'Date': [
+            '2024-01-01', '2024-01-02', '2024-01-03',
+            '2024-01-04', '2024-01-05', '2024-01-06',
+            '2024-01-07', '2024-01-08', '2024-01-09',
+            '2024-01-10', '2024-01-11', '2024-01-12'
+        ],
+        'Patient_ID': ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012'],
+        'Age': [45, 38, 50, 29, 60, 45, 34, 58, 47, 53, 31, 40],
+        'Gender': ['Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female'],
+        'Diagnosis': ['Hypertension', 'Diabetes', 'Heart Disease', 'Hypertension', 'Cancer', 'Diabetes', 'Hypertension', 'Cancer', 'Diabetes', 'Heart Disease', 'Cancer', 'Hypertension'],
+        'Visit_Cost': [150, 200, 250, 130, 500, 180, 140, 550, 210, 260, 300, 160]
+    })
+    data['Date'] = pd.to_datetime(data['Date'])
+    return data
+
+data = load_data()
+
+# Plot: Total Visits by Diagnosis
+fig, ax = plt.subplots(figsize=(10, 6))
+diagnosis_counts = data['Diagnosis'].value_counts()
+sns.barplot(x=diagnosis_counts.index, y=diagnosis_counts.values, ax=ax, palette='viridis')
+ax.set_xlabel('Diagnosis')
+ax.set_ylabel('Number of Visits')
+ax.set_title('Total Visits by Diagnosis')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('total_visits_by_diagnosis.png')
+plt.close()
+
+# Plot: Average Cost by Diagnosis
+fig, ax = plt.subplots(figsize=(10, 6))
+avg_cost = data.groupby('Diagnosis')['Visit_Cost'].mean().sort_values()
+sns.barplot(x=avg_cost.index, y=avg_cost.values, ax=ax, palette='plasma')
+ax.set_xlabel('Diagnosis')
+ax.set_ylabel('Average Cost')
+ax.set_title('Average Visit Cost by Diagnosis')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('average_cost_by_diagnosis.png')
+plt.close()
+
+# Plot: Visits Over Time
+fig, ax = plt.subplots(figsize=(10, 6))
+daily_visits = data.groupby(data['Date'].dt.date).size()
+ax.plot(daily_visits.index, daily_visits.values, marker='o', linestyle='-', color='b')
+ax.set_xlabel('Date')
+ax.set_ylabel('Number of Visits')
+ax.set_title('Daily Visits Over Time')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('visits_over_time.png')
+plt.close()
+
+# Plot: Total Cost Over Time
+fig, ax = plt.subplots(figsize=(10, 6))
+daily_cost = data.groupby(data['Date'].dt.date)['Visit_Cost'].sum()
+ax.plot(daily_cost.index, daily_cost.values, marker='o', linestyle='-', color='r')
+ax.set_xlabel('Date')
+ax.set_ylabel('Total Cost')
+ax.set_title('Total Visit Cost Over Time')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('total_cost_over_time.png')
+plt.close()
+
+# Plot: Age Distribution of Patients
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.histplot(data['Age'], kde=True, ax=ax, color='c')
+ax.set_xlabel('Age')
+ax.set_ylabel('Frequency')
+ax.set_title('Age Distribution of Patients')
+plt.tight_layout()
+plt.savefig('age_distribution.png')
+plt.close()
+
+# Plot: Cost Distribution by Diagnosis
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.boxplot(x='Diagnosis', y='Visit_Cost', data=data, ax=ax, palette='coolwarm')
+ax.set_xlabel('Diagnosis')
+ax.set_ylabel('Visit Cost')
+ax.set_title('Distribution of Visit Costs by Diagnosis')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('cost_distribution_by_diagnosis.png')
+plt.close()
+
+# Plot: Correlation Heatmap
+fig, ax = plt.subplots(figsize=(10, 6))
+correlation_matrix = data[['Age', 'Visit_Cost']].corr()
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', ax=ax)
+ax.set_title('Correlation Heatmap')
+plt.tight_layout()
+plt.savefig('correlation_heatmap.png')
+plt.close()
+
+# Plot: Gender Distribution
+fig, ax = plt.subplots(figsize=(10, 6))
+gender_counts = data['Gender'].value_counts()
+sns.barplot(x=gender_counts.index, y=gender_counts.values, ax=ax, palette='Set2')
+ax.set_xlabel('Gender')
+ax.set_ylabel('Count')
+ax.set_title('Gender Distribution')
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.savefig('gender_distribution.png')
+plt.close()
+
+print("All plots have been saved successfully.")
